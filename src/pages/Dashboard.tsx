@@ -23,6 +23,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { fetchQuote } from "../lib/quotes";
 import { useAuth } from "../lib/AuthContext";
 import { toast } from "sonner";
 import {
@@ -910,24 +911,7 @@ export default function Dashboard() {
         if (!tab.symbol) continue;
 
         try {
-          const targetUrl = `/api/stock/${tab.symbol}`;
-
-          let price = null;
-
-          try {
-            const response = await fetch(targetUrl);
-            if (!response.ok) continue;
-
-            const data = await response.json();
-            const fetchedPrice =
-              data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-
-            if (fetchedPrice && typeof fetchedPrice === "number") {
-              price = fetchedPrice;
-            }
-          } catch (err) {
-            console.warn(`Local API failed for ${tab.symbol}`, err);
-          }
+          const price = await fetchQuote(tab.symbol);
 
           if (price && typeof price === "number") {
             await updateDoc(doc(db, "stockTabs", tab.id), {
@@ -1477,7 +1461,7 @@ export default function Dashboard() {
     });
 
     try {
-      const { GoogleGenAI } = await import("@google/genai");
+      const { GoogleGenAI } = await import("@/lib/ai");
       // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 

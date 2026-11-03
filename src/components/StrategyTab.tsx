@@ -76,7 +76,7 @@ export default function StrategyTab({
     });
 
     try {
-      const { GoogleGenAI } = await import("@google/genai");
+      const { GoogleGenAI } = await import("@/lib/ai");
       // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -475,7 +475,7 @@ export default function StrategyTab({
     toast.loading("正在掃描並分析 PDF...", { id: "scan-pdf" });
 
     try {
-      const { GoogleGenAI, Type } = await import("@google/genai");
+      const { GoogleGenAI, Type } = await import("@/lib/ai");
       // @ts-ignore
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
