@@ -1,0 +1,5 @@
+name = "us-stock-strategy-api"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+
+# 不需要 DEEPSEEK_API_KEY 寫在這裡：用 `wrangler secret put DEEPSEEK_API_KEY` 存成加密 secret

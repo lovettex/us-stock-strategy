@@ -8,9 +8,9 @@ export default defineConfig(({mode}) => {
   return {
     plugins: [react(), tailwindcss()],
     define: {
+      // 後端（Cloudflare Worker）位址；留空則走相對路徑（本機 server.ts）
+      'process.env.API_BASE': JSON.stringify(env.API_BASE),
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.DEEPSEEK_API_KEY': JSON.stringify(env.DEEPSEEK_API_KEY),
-      'process.env.TWELVEDATA_API_KEY': JSON.stringify(env.TWELVEDATA_API_KEY),
     },
     resolve: {
       alias: {

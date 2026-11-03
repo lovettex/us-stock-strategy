@@ -3,15 +3,20 @@
  *
  * 用法與原本完全相同：
  *   const { GoogleGenAI, Type } = await import("@/lib/ai");
- *   const ai = new GoogleGenAI({ apiKey: process.env.DEEPSEEK_API_KEY });
+ *   const ai = new GoogleGenAI();
  *   const res = await ai.models.generateContent({ model, contents, config });
  *   res.text
+ *
+ * 架構：前端 → Cloudflare Worker (/api/ai) → DeepSeek。
+ * DEEPSEEK_API_KEY 只存在 Worker secret，永遠不會出現在前端 bundle。
  *
  * 差異說明：
  *  - tools: [{ googleSearch: {} }] 會被忽略（DeepSeek API 沒有內建網路搜尋）。
  *  - config.responseSchema 會轉成 JSON 說明 + response_format json_object（DeepSeek 不做強制 schema 驗證）。
  *  - inlineData 若是 application/pdf，會先用 pdfjs-dist 抽出文字再送給 DeepSeek。
  */
+
+import { apiUrl } from "./api";
 
 export const Type = {
   STRING: "string",
@@ -23,7 +28,6 @@ export const Type = {
   NULL: "null",
 } as const;
 
-const API_BASE = "https://api.deepseek.com";
 const CHAT_MODEL = "deepseek-chat";
 
 type InlineData = { data: string; mimeType: string };
@@ -86,15 +90,10 @@ async function extractPdfText(base64: string): Promise<string> {
 }
 
 export class GoogleGenAI {
-  private apiKey: string;
   models: { generateContent: (args: GenerateArgs) => Promise<{ text: string }> };
 
-  constructor(opts: { apiKey?: string } = {}) {
-    this.apiKey =
-      opts?.apiKey || (process.env.DEEPSEEK_API_KEY as string) || "";
-    if (!this.apiKey) {
-      console.warn("DeepSeek API key 未設定（DEEPSEEK_API_KEY），AI 功能將無法使用");
-    }
+  constructor(_opts: { apiKey?: string } = {}) {
+    // apiKey 已不再需要：key 由 Cloudflare Worker 保管
     this.models = { generateContent: (args) => this.generateContent(args) };
   }
 
@@ -152,18 +151,17 @@ export class GoogleGenAI {
     };
     if (wantsJson) body.response_format = { type: "json_object" };
 
-    const res = await fetch(`${API_BASE}/chat/completions`, {
+    const res = await fetch(apiUrl("/api/ai"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
       const errText = await res.text().catch(() => "");
-      throw new Error(`DeepSeek API 錯誤 (${res.status})：${errText.slice(0, 300)}`);
+      throw new Error(`AI 服務錯誤 (${res.status})：${errText.slice(0, 300)}`);
     }
 
     const data = await res.json();
