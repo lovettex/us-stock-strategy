@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-0993209078",
-  "appId": "1:949632207764:web:906e0e44c3848b561e9d81",
-  "apiKey": "AIzaSyCmBm5Orwdaq2kLzcwwtCbmm_YQEZ9yK6M",
-  "authDomain": "gen-lang-client-0993209078.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-76001ca3-644c-4300-ac53-5a48a8d22b6c",
-  "storageBucket": "gen-lang-client-0993209078.firebasestorage.app",
-  "messagingSenderId": "949632207764",
+  "projectId": "us-stock-strategy-app",
+  "appId": "1:240065146074:web:80c6e3ae827e1c916e09e3",
+  "apiKey": "AIzaSyDgImb1ry7uEKRixRg3mQS0YhAzfcwA_eI",
+  "authDomain": "us-stock-strategy-app.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "us-stock-strategy-app.firebasestorage.app",
+  "messagingSenderId": "240065146074",
   "measurementId": ""
 }
