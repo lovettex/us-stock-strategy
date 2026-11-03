@@ -2,7 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import fs from "fs";
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type } from "./src/lib/ai-server.ts";
 import "dotenv/config";
 import { db } from "./src/db/index.ts";
 import { uploadedHtmlFiles } from "./src/db/schema.ts";
@@ -252,9 +252,9 @@ async function startServer() {
         return res.status(400).json({ error: "請上傳或提供股票走勢圖檔進行分析" });
       }
 
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ error: "伺服器未設定 GEMINI_API_KEY，請在設定中添加金鑰。" });
+        return res.status(500).json({ error: "伺服器未設定 DEEPSEEK_API_KEY，請在 .env 中添加金鑰。" });
       }
 
       const ai = new GoogleGenAI({
@@ -547,9 +547,9 @@ async function startServer() {
         strategyData,
       } = req.body;
 
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ error: "伺服器未設定 GEMINI_API_KEY，請在設定中添加金鑰。" });
+        return res.status(500).json({ error: "伺服器未設定 DEEPSEEK_API_KEY，請在 .env 中添加金鑰。" });
       }
 
       const ai = new GoogleGenAI({
@@ -621,9 +621,9 @@ async function startServer() {
         return res.status(400).json({ error: "請提供 PDF Base64 檔案內容。" });
       }
 
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ error: "伺服器未設定 GEMINI_API_KEY，請在設定中添加金鑰。" });
+        return res.status(500).json({ error: "伺服器未設定 DEEPSEEK_API_KEY，請在 .env 中添加金鑰。" });
       }
 
       const ai = new GoogleGenAI({
@@ -880,9 +880,9 @@ async function startServer() {
 
       // FALLBACK: Gemini Search Grounding
       console.log("Executing Gemini Search Grounding fallback...");
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.DEEPSEEK_API_KEY || process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        return res.status(500).json({ error: "伺服器未設定 GEMINI_API_KEY 且 Airtop 執行失敗，請在設定中添加金鑰。" });
+        return res.status(500).json({ error: "伺服器未設定 DEEPSEEK_API_KEY，請在 .env 中添加金鑰。" });
       }
 
       const ai = new GoogleGenAI({
