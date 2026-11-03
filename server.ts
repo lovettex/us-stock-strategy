@@ -777,7 +777,7 @@ async function startServer() {
         return res.status(400).json({ error: "請提供 Prompt 內容。" });
       }
 
-      const airtapKey = process.env.AIRTAP_API_KEY || process.env.AIRTOP_API_KEY || "at-pat-zLu8vgKJ6Ply4s1oZh3yyJatHOpoxNJkd2aIkWBh";
+      const airtapKey = process.env.AIRTAP_API_KEY || process.env.AIRTOP_API_KEY || "";
 
       if (airtapKey) {
         console.log("Using Airtop API key for web-grounded analysis...");
